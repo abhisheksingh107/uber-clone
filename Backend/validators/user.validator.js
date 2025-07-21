@@ -21,3 +21,13 @@ module.exports.registerSchema = Joi.object({
         'any.required': 'Password is required'
     }),
 });
+
+module.exports.loginSchema = Joi.object({
+    email: Joi.string().trim().email().required().messages({
+        'string.email': 'Email must be a valid email',
+        'string.empty': "Email is required"
+    }),
+    password: Joi.string().required().messages({
+        'string.empty': "Password is required"
+    }),
+});

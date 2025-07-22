@@ -3,7 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     fullName: {
         firstName: {
             type: String,

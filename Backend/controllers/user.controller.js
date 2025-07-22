@@ -1,3 +1,5 @@
+
+const  { blackListToken }  = require("../services/blackListToken.service");
 const userService = require("../services/user.service");
 
 module.exports.registerUser = async (req, res) => {
@@ -14,10 +16,16 @@ module.exports.registerUser = async (req, res) => {
         const userObj = user.toObject();
         delete userObj.password
 
+        res.cookie('token', token, {
+            maxAge: 24 * 60 * 60 * 7000, //expire in 7D
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "Lax"
+        });
+
         res.status(200).json(({
             success: true,
             message: "user register successfully",
-            token,
             user: userObj
         }));
     } catch (error) {
@@ -36,11 +44,18 @@ module.exports.loginUser = async (req, res) => {
         const token = user.getJWT();
         const userObj = user.toObject();
         delete userObj.password;
+
+        res.cookie('token', token, {
+            maxAge: 24 * 60 * 60 * 7000, //expire in 7D
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'Lax'
+        });
+
         res.status(200).json({
             success: true,
             user: userObj,
             message: "Login Succesfull",
-            token
         })
     } catch (error) {
         res.status(500).json({
@@ -48,5 +63,42 @@ module.exports.loginUser = async (req, res) => {
             message: error.message
         })
     }
+};
 
-}
+module.exports.getProfile = async (req, res) => {
+    const user = req.user;
+    try {
+        res.status(200).json({
+            success: true,
+            message: 'fetch data Successfully',
+            user
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+};
+
+
+module.exports.logout = async (req, res) => {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+        });
+        await blackListToken({ token });
+        res.status(200).json({
+            success: true,
+            message: "Logout Successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+};

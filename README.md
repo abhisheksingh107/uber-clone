@@ -1,166 +1,141 @@
-# 🚗 Uber Clone Backend
+# Backend API Documentation
 
-A Node.js backend for an Uber-like app, featuring user and captain registration, authentication, validation, and MongoDB integration.
-
----
-
-## 📁 Project Structure
-
-```
-Backend/
-├── controllers/
-│   ├── user.controller.js
-│   └── captain.controller.js
-├── db/
-│   └── db.js
-├── middlewares/
-│   ├── auth.middleware.js
-│   └── validate.middleware.js
-├── models/
-│   ├── user.model.js
-│   ├── captain.model.js
-│   └── blackListToken.model.js
-├── routes/
-│   ├── user.routes.js
-│   └── captain.routes.js
-├── services/
-│   ├── user.service.js
-│   ├── captain.service.js
-│   └── blackListToken.service.js
-├── validators/
-│   ├── user.validator.js
-│   └── captain.validator.js
-├── app.js
-├── server.js
-├── .env
-└── README.md
-```
+This backend powers an Uber-like application, providing authentication, profile management, ride creation, and map utilities for both users and captains.
 
 ---
 
-## ⚙️ Tech Stack
+## controllers/captain.controller.js
 
-- Node.js
-- Express.js
-- MongoDB & Mongoose
-- JWT (Authentication)
-- Joi (Validation)
-- bcrypt (Password hashing)
+Handles all captain-related authentication and profile logic.
 
----
+### Main Functions
 
-## 🚀 Getting Started
+- **createCaptain**: Registers a new captain, hashes password, saves vehicle info, and sets JWT cookie.
+- **loginCaptain**: Authenticates captain, sets JWT cookie, returns captain profile.
+- **logoutCaptain**: Clears JWT cookie, blacklists token for secure logout.
+- **getCaptainProfile**: Returns authenticated captain’s profile data.
 
-1. **Clone the repository**
-    ```bash
-    git clone https://github.com/yourusername/uber-clone-backend.git
-    cd uber-clone-backend
-    ```
+### Related Endpoints
 
-2. **Install dependencies**
-    ```bash
-    npm install
-    ```
-
-3. **Configure environment variables**
-
-    Create a `.env` file:
-    ```
-    PORT=####
-    DB_CONNECT=#####
-    JWT_SECRET=####
-    ```
-
-    Make sure MongoDB is running locally.
-
-4. **Start the server**
-    ```bash
-    npm start
-    ```
-
-    Server runs at: `http://localhost:3000/`
+- `POST /captain/signup` — Register a captain
+- `POST /captain/login` — Login as captain
+- `POST /captain/logout` — Logout (requires authentication)
+- `GET /captain/getCaptainProfile` — Get captain profile (requires authentication)
 
 ---
 
-## 📮 API Endpoints
+## `/users/register` Endpoint
 
-### User
+### Description
 
-- `POST /user/signup` — Register user
-- `POST /user/login` — Login user
-- `GET /user/getProfile` — Get user profile (auth required)
-- `POST /user/logout` — Logout user (auth required)
+Registers a new user by creating a user account with the provided information.
 
-### Captain
+### HTTP Method
 
-- `POST /captain/signup` — Register captain
-- `POST /captain/login` — Login captain
-- `GET /captain/getCaptainProfile` — Get captain profile (auth required)
-- `POST /captain/logout` — Logout captain (auth required)
+`POST`
+
+### Request Body
+
+
+- `fullname` (object):
+  - `firstname` (string, required): User's first name (minimum 3 characters).
+  - `lastname` (string, optional): User's last name (minimum 3 characters).
+- `email` (string, required): User's email address (must be a valid email).
+- `password` (string, required): User's password (minimum 6 characters).
+
+> **Note:** All request bodies are validated using [Joi](https://joi.dev/) to ensure correct data types and required fields.
+The request body should be in JSON format and include the following fields:
+
+### Example Response
+
+- `user` (object):
+  - `fullname` (object).
+    - `firstname` (string): User's first name.
+    - `lastname` (string): User's last name.
+  - `email` (string): User's email address.
+- `token` (String): JWT Token
+
+## `/users/login` Endpoint
+
+### Description
+
+Authenticates a user using their email and password, returning a JWT token upon successful login.
+
+### HTTP Method
+
+`POST`
+
+### Request Body
+
+- `email` (string, required): User's email address.
+- `password` (string, required): User's password.
+
+### Example Response
+
+- `user` (object): User profile.
+- `token` (String): JWT Token
+
+## `/users/profile` Endpoint
+
+### Description
+
+Retrieves the profile information of the currently authenticated user.
+
+### HTTP Method
+
+`GET`
+
+### Authentication
+
+Requires a valid JWT token in the Authorization header:
+`Authorization: Bearer <token>`
+
+### Example Response
+
+- `user` (object): User profile.
+
+## `/users/logout` Endpoint
+
+### Description
+
+Logout the current user and blacklist the token provided in cookie or headers.
+
+### HTTP Method
+
+`POST`
+
+### Authentication
+
+Requires a valid JWT token in the Authorization header or cookie.
+
+- `message` (string): Logout successfully.
 
 ---
 
-## 📂 File Descriptions
+## `/captain/signup` Endpoint
 
-### server.js
-- Loads environment, connects to MongoDB, starts HTTP server.
+### Description
 
-### app.js
-- Sets up Express app, middleware, and routes.
+Registers a new captain by creating a captain account with the provided information.
 
-### controllers/
-- **user.controller.js**: Handles user registration, login, logout, profile.
-- **captain.controller.js**: Handles captain registration, login, logout, profile.
+### HTTP Method
 
-### middlewares/
-- **auth.middleware.js**: JWT authentication and blacklist check.
-- **validate.middleware.js**: Joi validation for requests.
+`POST`
 
-### models/
-- **user.model.js**: User schema, password hashing, JWT methods.
-- **captain.model.js**: Captain schema, vehicle info, password hashing, JWT methods.
-- **blackListToken.model.js**: Stores blacklisted JWT tokens.
+### Request Body
 
-### services/
-- **user.service.js**: User registration/login logic.
-- **captain.service.js**: Captain registration/login logic.
-- **blackListToken.service.js**: Blacklist token for logout.
+- `fullname` (object):
+  - `firstname` (string, required): Captain's first name.
+  - `lastname` (string, optional): Captain's last name.
+- `email` (string, required): Captain's email address.
+- `password` (string, required): Captain's password.
+- `vehicle` (object):
+  - `color` (string, required): Vehicle color.
+  - `plate` (string, required): Vehicle plate number.
+  - `capacity` (number, required): Vehicle passenger capacity.
+  - `vehicleType` (string, required): Type of vehicle.
 
-### validators/
-- **user.validator.js**: Joi schemas for user registration/login.
-- **captain.validator.js**: Joi schemas for captain registration/login.
+### Example Response
 
-### routes/
-- **user.routes.js**: User API endpoints.
-- **captain.routes.js**: Captain API endpoints.
-
----
-
-## ✅ Features
-
-- User & Captain Registration with password hashing
-- JWT-based Authentication
-- Input validation using Joi
-- Clean MVC folder structure
-- Centralized `.env` configuration
-- Token blacklist for secure logout
-
----
-
-## 📘 To-Do
-
-- Add ride booking and matching
-- Add real-time tracking (Socket.io)
-- Add Swagger API docs
-
----
-
-## 🛠️ Author
-
-- **Your Name** — [GitHub Profile](https://github.com/abhishek107)
-
----
-
-## 📄 License
-
-MIT License
+- `captain` (object): Captain profile.
+- `token

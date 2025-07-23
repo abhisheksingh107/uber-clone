@@ -43,9 +43,11 @@ const userSchema = new mongoose.Schema({
     socketId: {
         type: String,
     }
-}, {
+},
+{
     timestamps: true,
 });
+
 userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 10)
@@ -53,9 +55,8 @@ userSchema.pre('save', async function (next) {
     next();
 })
 
-
 userSchema.methods.getJWT = function () {
-    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     return token;
 };
 

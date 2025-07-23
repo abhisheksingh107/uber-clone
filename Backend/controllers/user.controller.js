@@ -2,7 +2,7 @@
 const  { blackListToken }  = require("../services/blackListToken.service");
 const userService = require("../services/user.service");
 
-module.exports.registerUser = async (req, res) => {
+module.exports.createUser = async (req, res) => {
     const { fullName, email, password } = req.body;
     try {
         const user = await userService.createUser({
@@ -20,7 +20,7 @@ module.exports.registerUser = async (req, res) => {
             maxAge: 24 * 60 * 60 * 7000, //expire in 7D
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "Lax"
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'Lax'
         });
 
         res.status(200).json(({

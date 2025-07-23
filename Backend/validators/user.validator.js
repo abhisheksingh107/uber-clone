@@ -19,18 +19,21 @@ module.exports.registerSchema = Joi.object({
         'string.min': 'Email must be at least 5 charaters long',
         'string.empty': 'Email is required'
     }),
-    password: Joi.string().min(8).required().messages({
+    password: Joi.string().min(8).required().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$')).messages({
         'string.min': 'Password must be at least 8 characters',
-        'any.required': 'Password is required'
+        'any.required': 'Password is required',
+        'string.pattern.base': 'Password must contain uppercase, lowercase, number and be strong'
     }),
 });
 
 module.exports.loginSchema = Joi.object({
     email: Joi.string().trim().email().required().messages({
         'string.email': 'Email must be a valid email',
-        'string.empty': "Email is required"
+        'string.empty': "Email is required",
+        'string.min': 'Email must be at least 5 characters long'
     }),
-    password: Joi.string().required().messages({
-        'string.empty': "Password is required"
+    password: Joi.string().required().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$')).messages({
+        'string.empty': "Password is required",
+        'string.pattern.base': 'Password must contain uppercase, lowercase, number and be Strong'
     }),
 });

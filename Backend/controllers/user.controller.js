@@ -66,7 +66,7 @@ module.exports.loginUser = async (req, res) => {
 };
 
 module.exports.getProfile = async (req, res) => {
-    const user = req.user;
+    const user = req.authUser;
     try {
         res.status(200).json({
             success: true,

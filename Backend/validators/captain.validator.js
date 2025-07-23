@@ -14,14 +14,15 @@ module.exports.registerSchema = Joi.object({
     }).required().messages({
         'any.required': 'Full Name is required',
     }),
-    email: Joi.string().trim().min(5).email().required().messages({
+    email: Joi.string().trim().min(5).email().required().lowercase().messages({
         'string.min': 'Email must be at least 5 characters long',
         'any.required': "Email is required",
         'string.email': 'Email must be valid Email'
     }),
-    password: Joi.string().required().min(8).messages({
+    password: Joi.string().required().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$')).min(8).messages({
         'string.min': 'Password should be more than 8 characters long',
-        'any.required': 'Password is required'
+        'any.required': 'Password is required',
+        'string.pattern.base': 'Password must contain uppercase, lowercase, number and be at least 8 characters long'
     }),
     status: Joi.string().valid('pending', 'active', 'inactive').optional(),
     vehicle: Joi.object({
@@ -45,3 +46,16 @@ module.exports.registerSchema = Joi.object({
         'any.required': 'Vehicle Information required',
     })
 });
+
+
+module.exports.loginSchema = Joi.object({
+    email: Joi.string().trim().lowercase().required().min(5).messages({
+        'string.email': 'Email must be valid Email',
+        'any.required': 'Email is required',
+        'string.min': 'Email must be at least 5 characters long'
+    }),
+    password: Joi.string().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$')).required().messages({
+        'any.required': 'Password is required',
+        'string.patter.base': 'Password must contain uppercase, lowercase, number and be Strong'
+    })
+})

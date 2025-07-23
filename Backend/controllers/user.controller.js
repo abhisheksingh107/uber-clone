@@ -1,5 +1,5 @@
 
-const  { blackListToken }  = require("../services/blackListToken.service");
+const { blackListToken } = require("../services/blackListToken.service");
 const userService = require("../services/user.service");
 
 module.exports.createUser = async (req, res) => {
@@ -66,12 +66,12 @@ module.exports.loginUser = async (req, res) => {
 };
 
 module.exports.getProfile = async (req, res) => {
-    const user = req.authUser;
+    const captain = req.authUser;
     try {
         res.status(200).json({
             success: true,
-            message: 'fetch data Successfully',
-            user
+            message: 'Captain data fetch Successfully',
+            captain
         })
     } catch (error) {
         res.status(500).json({

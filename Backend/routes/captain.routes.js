@@ -13,4 +13,6 @@ router.post('/login', validate(loginSchema), captainController.loginCaptain);
 
 router.post('/logout', captainAuth(CaptainModel), captainController.logoutCaptain);
 
+router.get('/getCaptainProfile', captainAuth(CaptainModel), captainController.getCaptainProfile)
+
 module.exports = router;

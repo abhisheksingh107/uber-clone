@@ -93,3 +93,20 @@ module.exports.logoutCaptain = async (req, res) => {
         })
     }
 };
+
+module.exports.getCaptainProfile = async(req, res) => {
+    const captain = req.authUser;
+    try {
+        res.status(200).json({
+            success: true,
+            message: 'Captain Profile Data fetch',
+            captain
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+
+}

@@ -1,6 +1,6 @@
 import { createContext, useState } from "react"
 
-// Create a contect
+// Create a context
 const UserContext = createContext();
 // 2. Create a provider component
 export const UserProvider = ({ children }) => {

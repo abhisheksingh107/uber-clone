@@ -3,7 +3,6 @@ const captainService = require("../services/captain.service");
 
 module.exports.createCaptain = async (req, res) => {
     const { fullName, email, password, status, vehicle } = req.body;
-    console.log(fullName);
     try {
         const captain = await captainService.createCaptain({
             firstName: fullName.firstName,
@@ -29,7 +28,8 @@ module.exports.createCaptain = async (req, res) => {
 
         res.status(200).json({
             message: 'captain register successfully',
-            captain: captainObj
+            captain: captainObj,
+            token
         })
     } catch (error) {
         res.status(500).json({
@@ -57,7 +57,8 @@ module.exports.loginCaptain = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Captain login Successfully',
-            captain: captainObj
+            captain: captainObj,
+            token
         })
     } catch (error) {
         res.status(500).json({

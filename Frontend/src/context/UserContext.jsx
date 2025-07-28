@@ -2,7 +2,11 @@ import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 
 // Create a context
+<<<<<<< HEAD
 export const UserContext = createContext();
+=======
+const UserContext = createContext();
+>>>>>>> 7c16638e698d00b582d27cbc74537b1214fb01eb
 // 2. Create a provider component
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
